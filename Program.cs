@@ -16,7 +16,7 @@ namespace AzureSQLSharePoint
         static void Main(string[] args)
         {
             
-            using (var clientContext = new ClientContext("https://yoursharpointsite.sharepoint.com/"))
+            using (var clientContext = new ClientContext("https://yoursite.sharepoint.com"))
             {
                 // SharePoint Online Credentials    
                 clientContext.Credentials = new SharePointOnlineCredentials(GetSPOAccountName(), GetSPOSecureStringPassword());
@@ -24,21 +24,22 @@ namespace AzureSQLSharePoint
                 clientContext.Load(web);
                 clientContext.ExecuteQuery();
 
-                List productList = web.Lists.GetByTitle("Products");
+                List productList = web.Lists.GetByTitle("Chicken");
                 DataTable dt = new DataTable();
                 dt = GetDatafromSQL();
                 foreach (DataRow dr in dt.Rows) // Loop over the rows.  
                 {
                     ListItemCreationInformation itemCreateInfo = new ListItemCreationInformation();
                     ListItem newItem = productList.AddItem(itemCreateInfo);
-                    newItem["customer_id"] = dr["customer_id"];
-                    newItem["first_name"] = dr["first_name"];
-                    newItem["last_name"] = dr["last_name"];
+              
+                    newItem["firstname"] = dr["firstname"];
+                    newItem["lastname"] = dr["lastname"];
                     newItem["phone"] = dr["phone"];
                     newItem["street"] = dr["street"];
                     newItem["city"] = dr["city"];
                     newItem["state"] = dr["state"];
-                    newItem["zip_code"] = dr["zip_code"];
+                    newItem["zip"] = dr["zip"];
+                    newItem["DateCreated"] = dr["DateCreated"];
                     newItem.Update();
                     clientContext.Load(newItem);
                     clientContext.ExecuteQuery();
@@ -52,19 +53,19 @@ namespace AzureSQLSharePoint
 
         private static DataTable GetDatafromSQL()
         {
-            DataTable dataTable = new DataTable();
-            string connString = @"Server=YOURSERVERNAME;Database=YOURDATABE;uid=YOURUSERID;password=YOURPASSWORD";
-            string query = "SELECT p.customer_id, p.first_name, p.last_name, p.phone, p.street, p.city, p.state, p.zip_code from sales.customers p where p.customer_Id<500;";
-
+            //string connString = @"Server=YOURSERVERNAME;Database=YOURDATABE;uid=YOURUSERID;password=YOURPASSWORD";
+            string connString = ConfigurationManager.ConnectionStrings["Products"].ConnectionString;
+            //string query = "SELECT p.customer_id, p.first_name, p.last_name, p.phone, p.street, p.city, p.state, p.zip_code from sales.customers p where p.customer_Id<500;";
             SqlConnection connection = new SqlConnection(connString);
-            SqlCommand cmd = new SqlCommand(query, connection);
+            //SqlCommand cmd = new SqlCommand(query, connection);
+            SqlDataAdapter sqlDa = new SqlDataAdapter("AllClients", connection);
+            DataTable dataTable = new DataTable();
+            sqlDa.Fill(dataTable);
             connection.Open();
-
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dataTable);
+            //SqlDataAdapter da = new SqlDataAdapter(cmd);
+            //da.Fill(dataTable);
             connection.Close();
-            da.Dispose();
-
+            sqlDa.Dispose();
             return dataTable;
         }
 
@@ -98,7 +99,5 @@ namespace AzureSQLSharePoint
                 throw;
             }
         }
-    }
-}
     }
 }

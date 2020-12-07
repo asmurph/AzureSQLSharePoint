@@ -21,3 +21,4 @@ C:\Users\Anthonhy\source\repos\AzureSQLSharePoint\obj\Debug\AzureSQLSharePoint.c
 C:\Users\Anthonhy\source\repos\AzureSQLSharePoint\obj\Debug\AzureSQLSharePoint.csproj.CopyComplete
 C:\Users\Anthonhy\source\repos\AzureSQLSharePoint\obj\Debug\AzureSQLSharePoint.exe
 C:\Users\Anthonhy\source\repos\AzureSQLSharePoint\obj\Debug\AzureSQLSharePoint.pdb
+C:\Users\Anthonhy\source\repos\AzureSQLSharePoint\bin\Debug\Settings.job
